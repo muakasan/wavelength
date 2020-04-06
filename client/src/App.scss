@@ -1,0 +1,171 @@
+.App {
+  padding: 20px;
+  text-align: center;
+}
+
+$red: #cd2335;
+
+$outerDeviceDiameter: 800px;
+$outerDeviceBorder: 10px;
+
+$deviceParentHeight: $outerDeviceDiameter * 0.6;
+
+.device_parent {
+  margin: 0 auto;
+  margin-top: 50px;
+  width: $outerDeviceDiameter;
+  height: $deviceParentHeight;
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.5));
+}
+
+.device_outer {
+  background-color: #f4ede1;
+
+  width: $outerDeviceDiameter;
+  height: $outerDeviceDiameter;
+
+  border-radius: $outerDeviceDiameter;
+
+  position: relative;
+}
+
+$deviceDiameter: $outerDeviceDiameter - 2 * $outerDeviceBorder;
+$deviceBorder: 25px;
+
+.device {
+  position: absolute;
+  left: $outerDeviceBorder;
+  top: $outerDeviceBorder;
+
+  background-color: #0d0e33;
+
+  width: $deviceDiameter;
+  height: $deviceDiameter;
+
+  border-radius: $deviceDiameter;
+}
+
+$innerDeviceDiameter: $deviceDiameter - 2 * $deviceBorder;
+$innerDeviceHeight: $innerDeviceDiameter / 2;
+
+.device_inner {
+  position: absolute;
+  left: $deviceBorder;
+  top: $deviceBorder;
+
+  background-color: #f4ede1;
+
+  width: $innerDeviceDiameter;
+  height: $innerDeviceHeight;
+
+  border-top-left-radius: $innerDeviceDiameter;
+  border-top-right-radius: $innerDeviceDiameter;
+
+  overflow: hidden;
+}
+
+.target {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  transform-origin: bottom center;
+}
+
+.target:before {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  
+  transform-origin: bottom center;
+
+  transform: rotate(-172deg);
+  background-color: #5a839b;
+  content: '';
+}
+
+.target .number {
+  position: absolute;
+  height: 100%;
+  transform-origin: bottom center;
+  font-size: 22px;
+  font-weight: bold;
+  transform: rotate(-86deg);
+}
+
+$wingShort: 65px;
+
+.device_wing_l {
+  transform: rotate(7deg);
+  transform-origin: bottom right;
+  width: calc(#{$deviceDiameter} / 2 - #{$wingShort});
+  background-color: #0d0e33;
+  height: 50px;
+
+  top: 300px;
+  left: 90px;
+  position: absolute;
+
+  top: calc(#{$deviceDiameter} / 2 + 2px);
+  left: $wingShort;
+
+  z-index: 3;
+}
+
+.device_wing_r {
+  transform: rotate(-7deg);
+  transform-origin: bottom left;
+  width: calc(#{$deviceDiameter} / 2 - #{$wingShort});
+  background-color: #0d0e33;
+  height: 50px;
+
+  top: 300px;
+  left: 90px;
+  position: absolute;
+
+  top: calc(#{$deviceDiameter} / 2 + 2px);
+  left: calc(#{$deviceDiameter} / 2);
+
+  z-index: 3;
+}
+
+$redDiameter: 125px;
+
+.device_red {
+  position: absolute;
+
+  width: $redDiameter;
+  height: $redDiameter;
+
+  border-radius: $redDiameter;
+
+  top: calc(#{$deviceDiameter} / 2 - #{$redDiameter} / 2);
+  left: calc(#{$deviceDiameter} / 2 - #{$redDiameter} / 2);
+
+  background-color: $red;
+  z-index: 4;
+}
+
+$dialWidth: 14px;
+$dialHeight: 0.75;
+$dialOffset: 1-$dialHeight;
+
+.dial {
+  position: absolute;
+  transform-origin: bottom center;
+
+  height: calc(#{$innerDeviceDiameter} / 2 * #{$dialHeight});
+  width: $dialWidth;
+
+  top: calc((#{$innerDeviceDiameter} / 2) * #{$dialOffset});
+  left: calc(#{$innerDeviceDiameter} / 2 - #{$dialWidth} / 2);
+  border-radius: $dialWidth;
+
+  z-index: 2;
+
+  background-color: $red;
+}
