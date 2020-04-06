@@ -32,6 +32,7 @@ class Device extends Component {
       client.emit("requestGameState");
     });
     client.on("gameState", (updatedState) => {
+      console.log(updatedState);
       this.setState({
         gameState: updatedState,
       });
@@ -59,13 +60,18 @@ class Device extends Component {
     dialPosition = Math.min(dialPosition, 0.95);
     dialPosition = Math.max(dialPosition, 0.05);
 
-    this.setState({
-      gameState: {
-        dialPosition: dialPosition,
-      },
-    });
+    const { client } = this.state;
 
-    this.state.client.emit("setDialPosition", this.state.gameState);
+    this.setState(
+      {
+        gameState: {
+          dialPosition: dialPosition,
+        },
+      },
+      () => {
+        client.emit("setDialPosition", this.state.gameState);
+      }
+    );
   };
 
   render() {
