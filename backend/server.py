@@ -1,8 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 from flask_socketio import SocketIO
 import random
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../client/build')
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, cors_allowed_origins='*')
 
@@ -15,6 +16,14 @@ possible_clues = [
 ]
 random.shuffle(possible_clues)
 clue_idx = 0
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 @socketio.on('requestGameState')
 def handle_request_game_state():
