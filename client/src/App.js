@@ -62,11 +62,12 @@ class Device extends Component {
     dialPosition = Math.min(dialPosition, 0.95);
     dialPosition = Math.max(dialPosition, 0.05);
 
-    const { client } = this.state;
+    const { client, gameState } = this.state;
 
     this.setState(
       {
         gameState: {
+          ...gameState,
           dialPosition: dialPosition,
         },
       },
@@ -77,7 +78,8 @@ class Device extends Component {
   };
 
   screenHandleClicked = (event) => {
-    let { screenClosed, targetPosition } = this.state.gameState;
+    let { gameState } = this.state;
+    let { screenClosed, targetPosition } = gameState;
 
     // TODO remove this, randomizes target position every time you open the screen
     // just as a visual test
@@ -88,6 +90,7 @@ class Device extends Component {
     this.setState(
       {
         gameState: {
+          ...gameState,
           screenClosed: !screenClosed,
           targetPosition: targetPosition,
         },
@@ -134,8 +137,31 @@ class Device extends Component {
               }}
             />
           </div>
+          <div className="clue">
+            <div className="clueLeft">
+            <div className="text">Underrated letter of the alphabet</div>
+              <Arrow direction={"left"} />
+            </div>
+            <div className="clueRight">
+              <div className="text">Overrated letter of the alphabet</div>
+              <Arrow direction={"right"} />
+            </div>
+          </div>
+          <div className="clueHole" />
         </div>
       </div>
+    );
+  }
+}
+
+class Arrow extends Component {
+  render() {
+    const { direction } = this.props;
+    return (
+      <>
+        <div className="arrowBase" />
+        <div className={direction + " arrowTip"} />
+      </>
     );
   }
 }

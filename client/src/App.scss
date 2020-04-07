@@ -7,17 +7,17 @@
 }
 
 $red: #cd2335;
+$dialBlue: #1b1c49;
 
 $outerDeviceDiameter: 800px;
 $outerDeviceBorder: 10px;
 
-$deviceParentHeight: $outerDeviceDiameter * 0.6;
-
 .device_parent {
   margin: 0 auto;
-  margin-top: 50px;
+  margin-top: 100px;
+  padding: 75px;
   width: $outerDeviceDiameter;
-  height: $deviceParentHeight;
+  height: $outerDeviceDiameter;
   filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.5));
 }
 
@@ -40,7 +40,7 @@ $deviceBorder: 25px;
   left: $outerDeviceBorder;
   top: $outerDeviceBorder;
 
-  background-color: #0d0e33;
+  background-color: $dialBlue;
 
   width: $deviceDiameter;
   height: $deviceDiameter;
@@ -117,7 +117,7 @@ $wingShort: 65px;
   transform: rotate(6deg);
   transform-origin: bottom right;
   width: calc(#{$deviceDiameter} / 2 - #{$wingShort});
-  background-color: #0d0e33;
+  background-color: $dialBlue;
   height: 50px;
 
   top: 300px;
@@ -134,7 +134,7 @@ $wingShort: 65px;
   transform: rotate(-6deg);
   transform-origin: bottom left;
   width: calc(#{$deviceDiameter} / 2 - #{$wingShort});
-  background-color: #0d0e33;
+  background-color: $dialBlue;
   height: 50px;
 
   top: 300px;
@@ -204,6 +204,9 @@ $screenShadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
   box-shadow: $screenShadow;
 
   transition: transform 1s ease;
+
+  border-top-left-radius: $innerDeviceHeight;
+  border-top-right-radius: $innerDeviceHeight;
 }
 
 $handleWidth: 20px;
@@ -228,4 +231,111 @@ $handleOffset: 1-$handleHeight;
   background-color: #6db5b2;
 
   transition: transform 1s ease;
+
+  cursor: pointer;
+}
+
+$clueWidth: 350px;
+$clueHeight: 200px;
+$clueBottomOffset: 100px;
+$clueShadow: -5px 0px 10px 8px rgba(0, 0, 0, 0.3);
+
+.clue {
+  position: absolute;
+  width: $clueWidth;
+  height: $clueHeight;
+
+  left: calc(#{$outerDeviceDiameter} / 2 - #{$clueWidth} / 2);
+
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+
+  bottom: $clueBottomOffset;
+
+  z-index: 6;
+
+  box-shadow: $clueShadow;
+
+  overflow: hidden;
+
+  transition: height 0.5s ease;
+}
+
+.clueLeft {
+  position: absolute;
+  left: 0;
+  background-color: #817289;
+}
+
+.clueRight {
+  position: absolute;
+  right: 0;
+  background-color: #77bdbb;
+}
+
+.clueLeft,
+.clueRight {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 28px;
+  font-weight: bold;
+
+  top: 0;
+  width: 50%;
+  height: 100%;
+}
+
+.clueLeft .text,
+.clueRight .text {
+  padding: 5px;
+  padding-top: 40px;
+}
+
+.clueHole {
+  position: absolute;
+  width: $clueWidth;
+  height: 0px;
+  padding: 5px;
+  padding-top: 15px;
+
+  border-radius: 3px;
+
+  bottom: calc(#{$clueBottomOffset} - 5px);
+  left: calc(#{$outerDeviceDiameter} / 2 - #{$clueWidth} / 2 - 5px);
+
+  background-color: black;
+  z-index: 5;
+}
+
+$arrowWidth: 80px;
+
+.arrowBase {
+  height: 3px;
+  width: $arrowWidth;
+  background-color: black;
+  position: absolute;
+
+  top: 40px;
+  left: calc((#{$clueWidth} / 2 - #{$arrowWidth}) / 2);
+}
+
+.arrowTip {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  padding: 8px;
+  position: absolute;
+
+  top: calc(40px - 8px);
+}
+
+.right {
+  transform: rotate(-45deg);
+  right: calc((#{$clueWidth} / 2 - #{$arrowWidth}) / 2);
+}
+
+.left {
+  transform: rotate(135deg);
+  left: calc((#{$clueWidth} / 2 - #{$arrowWidth}) / 2);
 }
