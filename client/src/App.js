@@ -20,7 +20,7 @@ class Device extends Component {
     this.state = {
       gameState: {
         dialPosition: 0.5,
-        screenClosed: false,
+        screenClosed: true,
         targetPosition: 0,
       },
       client: null,
@@ -34,10 +34,22 @@ class Device extends Component {
       client.emit("requestGameState");
     });
     client.on("gameState", (updatedState) => {
-      console.log(updatedState);
+      const gameState = this.state.gameState;
+
+      // If we update target position right away it reveals the result...
+      const targetPosition = updatedState.targetPosition;
+      delete updatedState.targetPosition;
+
       this.setState({
-        gameState: updatedState,
+        gameState: { ...gameState, ...updatedState },
       });
+
+      window.setTimeout(() => {
+        const gameState = this.state.gameState;
+        this.setState({
+          gameState: {...gameState, targetPosition: targetPosition},
+        });
+      }, 1100);
     });
     this.setState({
       client: client,
@@ -78,14 +90,8 @@ class Device extends Component {
   };
 
   screenHandleClicked = (event) => {
-    let { gameState } = this.state;
+    let { client, gameState } = this.state;
     let { screenClosed, targetPosition } = gameState;
-
-    // TODO remove this, randomizes target position every time you open the screen
-    // just as a visual test
-    if (screenClosed) {
-      targetPosition = Math.random() * 0.9 + 0.05;
-    }
 
     this.setState(
       {
@@ -96,7 +102,11 @@ class Device extends Component {
         },
       },
       () => {
-        // TODO sync with server
+        if (screenClosed) {
+          client.emit("reveal");
+        } else {
+          client.emit("nextRound");
+        }
       }
     );
   };
@@ -139,7 +149,7 @@ class Device extends Component {
           </div>
           <div className="clue">
             <div className="clueLeft">
-            <div className="text">Underrated letter of the alphabet</div>
+              <div className="text">Underrated letter of the alphabet</div>
               <Arrow direction={"left"} />
             </div>
             <div className="clueRight">
