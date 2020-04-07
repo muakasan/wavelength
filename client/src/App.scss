@@ -442,3 +442,67 @@ $arrowWidth: 80px;
 
   cursor: pointer;
 }
+
+.leftRight {
+  position: absolute;
+
+  left: 90px;
+  bottom: 285px;
+
+  width: 100px;
+  height: 70px;
+
+  z-index: 5;
+
+  border-radius: 3px;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+
+  overflow: hidden;
+
+  cursor: pointer;
+}
+
+.leftRightInner {
+  position: absolute;
+
+  left: 0;
+  top: 0;
+
+  width: 180px;
+  height: 100%;
+
+  transition: left 0.1s;
+}
+
+.toggled .leftRightInner {
+  left: -80px;
+}
+
+.hovered .leftRightInner {
+  left: -40px;
+}
+
+.leftBox {
+  left: 0;
+  background-color: #d29627;
+}
+
+.rightBox {
+  right: 0;
+  background-color: #e35f2d;
+}
+
+.leftBox,
+.rightBox {
+  position: absolute;
+
+  top: 0;
+
+  width: 90px;
+  height: 100%;
+
+  line-height: 70px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+}

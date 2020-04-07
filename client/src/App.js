@@ -26,6 +26,7 @@ class Device extends Component {
         clueColor: 0,
         score: [0, 0],
         turn: 0,
+        leftRight: 0,
       },
       psychic: false,
       controlsDisabled: false,
@@ -96,6 +97,26 @@ class Device extends Component {
     this.setState({
       psychic: !psychic,
     });
+  };
+
+  leftRightClicked = (event) => {
+    const { client, gameState, psychic, controlsDisabled } = this.state;
+
+    if (!gameState.screenClosed || psychic || controlsDisabled) {
+      return;
+    }
+
+    this.setState(
+      {
+        gameState: {
+          ...gameState,
+          leftRight: 1 - gameState.leftRight,
+        },
+      },
+      () => {
+        client.emit("setLeftRight", this.state.gameState);
+      }
+    );
   };
 
   newGameClicked = (event) => {
@@ -184,6 +205,7 @@ class Device extends Component {
       clueColor,
       score,
       turn,
+      leftRight,
     } = gameState;
     const rotation = Math.PI * (dialPosition + 1.5);
 
@@ -222,6 +244,11 @@ class Device extends Component {
           <div className="togglePeek" onMouseDown={this.togglePsychicClicked}>
             Psychic
           </div>
+          <LeftRight
+            leftRight={leftRight}
+            onMouseDown={this.leftRightClicked}
+            psychic={psychic}
+          />
           <Clue clues={clues} color={clueColor} />
           <div className={(turn == 0 ? "turn" : "") + " score1"}>
             {score[0]}
@@ -232,6 +259,45 @@ class Device extends Component {
           <div className="newGame" onMouseDown={this.newGameClicked}>
             New Game
           </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+class LeftRight extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      hover: false,
+    };
+  }
+
+  render() {
+    const { leftRight, psychic, onMouseDown } = this.props;
+    const { hover } = this.state;
+
+    const cls =
+      (hover && !psychic ? "hovered" : "") +
+      (leftRight == 1 ? " toggled" : "") +
+      " leftRight";
+
+    return (
+      <div
+        className={cls}
+        onMouseDown={(event) => {
+          this.setState({
+            hover: false,
+          });
+          onMouseDown(event);
+        }}
+        onMouseLeave={() => this.setState({ hover: false })}
+        onMouseEnter={() => this.setState({ hover: true })}
+      >
+        <div className="leftRightInner">
+          <div className="leftBox">Left</div>
+          <div className="rightBox">Right</div>
         </div>
       </div>
     );

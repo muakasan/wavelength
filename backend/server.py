@@ -20,6 +20,16 @@ clue_idx = 0
 def handle_request_game_state():
     socketio.emit('gameState', game_state, json=True, broadcast=True)
 
+@socketio.on('setLeftRight')
+def handle_set_left_right(j):
+    if game_state['complete']:
+        socketio.emit('gameState', game_state, json=True, broadcast=True)
+        return
+
+    if game_state['screenClosed']:
+        game_state['leftRight'] = j['leftRight']
+    socketio.emit('gameState', game_state, json=True, broadcast=True)
+
 @socketio.on('setDialPosition')
 def handle_set_dial_position(j):
     if game_state['complete']:
@@ -38,8 +48,8 @@ def handle_reveal():
 
     game_state['screenClosed'] = False
 
-    # TODO figure out if you always get one point, and hi/lo
-    distance = abs(game_state['targetPosition'] - game_state['dialPosition'])
+    difference = game_state['targetPosition'] - game_state['dialPosition']
+    distance = abs(difference)
 
     score = 0
     if distance * 180 <= 7.5 * 0.5:
@@ -48,6 +58,12 @@ def handle_reveal():
         score = 3
     elif distance * 180 <= 7.5 * 2.5:
         score = 2
+
+    if score < 4:
+        if difference < 0 and game_state['leftRight'] == 0:
+            game_state['score'][1 - game_state['turn']] += 1
+        elif difference > 0 and game_state['leftRight'] == 1:
+            game_state['score'][1 - game_state['turn']] += 1
 
     game_state['score'][game_state['turn']] += score
     game_state['lastScore'] = score
@@ -107,6 +123,7 @@ def default_game_state():
         'score': [0, 1],
         'turn': 0,
         'lastScore': 0,
+        'leftRight': 0,
         'complete': False,
         'gameId': random.randint(1, 1000000)
     }
