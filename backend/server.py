@@ -76,6 +76,7 @@ def handle_next_round():
     if not (game_state['lastScore'] >= 4 and game_state['score'][game_state['turn']] < game_state['score'][1 - game_state['turn']]):
         game_state['turn'] = 1 - game_state['turn']
 
+    game_state['clueColor'] = random.randint(0, 19-1)
     if game_state['roundNum'] % len(possible_clues) == 0:
         random.shuffle(possible_clues)
 
@@ -101,6 +102,7 @@ def default_game_state():
         'screenClosed': True,
         'targetPosition': random_target_pos(),
         'clues': possible_clues[0],
+        'clueColor': random.randint(0, 19-1),
         'roundNum': 0,
         'score': [0, 1],
         'turn': 0,

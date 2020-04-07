@@ -267,6 +267,21 @@ $clueShadow: -5px 0px 10px 8px rgba(0, 0, 0, 0.3);
   transition: height 0.5s ease;
 }
 
+.clue:after {
+  content: "";
+  position: absolute;
+
+  bottom: 0;
+  width: 100%;
+  left: 0;
+
+  box-shadow: -5px 0px 5px 3px rgba(0, 0, 0, 0.3);
+}
+
+.clue.hide {
+  height: 0;
+}
+
 .clueLeft {
   position: absolute;
   left: 0;
@@ -290,7 +305,7 @@ $clueShadow: -5px 0px 10px 8px rgba(0, 0, 0, 0.3);
 
   top: 0;
   width: 50%;
-  height: 100%;
+  height: $clueHeight;
 }
 
 .clueLeft .text,

@@ -22,7 +22,8 @@ class Device extends Component {
         dialPosition: 0.5,
         screenClosed: true,
         targetPosition: 0,
-        clues: ["Hot", "Cold"],
+        clues: ["", ""],
+        clueColor: 0,
         score: [0, 0],
         turn: 0,
       },
@@ -60,7 +61,10 @@ class Device extends Component {
 
       // Reset peek on new round
       let psychic = this.state.psychic;
-      if (updatedState.roundNum != gameState.roundNum || updatedState.gameId != gameState.gameId) {
+      if (
+        updatedState.roundNum != gameState.roundNum ||
+        updatedState.gameId != gameState.gameId
+      ) {
         psychic = false;
         this.disableControls();
       }
@@ -176,6 +180,7 @@ class Device extends Component {
       screenClosed,
       targetPosition,
       clues,
+      clueColor,
       score,
       turn,
     } = gameState;
@@ -216,18 +221,7 @@ class Device extends Component {
           <div className="togglePeek" onMouseDown={this.togglePsychicClicked}>
             Psychic
           </div>
-          <div className="clue">
-            <div className="clueLeft">
-              <div className="text">{clues[0]}</div>
-              <Arrow direction={"left"} />
-            </div>
-            <div className="clueRight">
-              <div className="text">{clues[1]}</div>
-              <Arrow direction={"right"} />
-            </div>
-          </div>
-          <div className="clueHole" />
-
+          <Clue clues={clues} color={clueColor} />
           <div className={(turn == 0 ? "turn" : "") + " score1"}>
             {score[0]}
           </div>
@@ -239,6 +233,95 @@ class Device extends Component {
           </div>
         </div>
       </div>
+    );
+  }
+}
+
+const CLUE_COLORS = [
+  ["#d0e6cd", "#1f9ec1"],
+  ["#694e72", "#e7dfc9"],
+  ["#127b6e", "#e8c7d1"],
+  ["#5fb763", "#fdfbef"],
+  ["#fdf9ef", "#932957"],
+  ["#e9c8d0", "#d74227"],
+  ["#d74227", "#9ad8f2"],
+  ["#e9dfc8", "#1c9fc0"],
+  ["#179fc1", "#e8c6cf"],
+  ["#e7dfc7", "#d74227"],
+  ["#dd89a1", "#edb245"],
+  ["#147b6e", "#cee6cd"],
+  ["#cee6cd", "#5eb663"],
+  ["#b57d2b", "#209ec0"],
+  ["#942657", "#e1694f"],
+  ["#817289", "#77bdbb"],
+  ["#91cecb", "#d74327"],
+  ["#ebbec0", "#eba920"],
+  ["#cfe2d7", "#ec5a3d"],
+];
+
+function randomClueColor() {
+  return CLUE_COLORS[Math.floor(Math.random() * CLUE_COLORS.length)];
+}
+
+class Clue extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      hide: false,
+      oldClues: ["", ""],
+      oldColor: 0,
+    };
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      prevProps.clues[0].length > 0 &&
+      JSON.stringify(prevProps.clues) != JSON.stringify(this.props.clues)
+    ) {
+      this.setState({
+        hide: true,
+        oldClues: prevProps.clues,
+        oldColor: prevProps.color,
+      });
+      window.setTimeout(() => {
+        this.setState({
+          hide: false,
+        });
+      }, 600);
+    }
+  }
+
+  render() {
+    const { clues, color } = this.props;
+    const { hide, oldClues, oldColor } = this.state;
+    return (
+      <>
+        <div className={(hide ? "hide" : "") + " clue"}>
+          <div
+            className="clueLeft"
+            style={{
+              backgroundColor: hide
+                ? CLUE_COLORS[oldColor][0]
+                : CLUE_COLORS[color][0],
+            }}
+          >
+            <div className="text">{hide ? oldClues[0] : clues[0]}</div>
+            <Arrow direction={"left"} />
+          </div>
+          <div
+            className="clueRight"
+            style={{
+              backgroundColor: hide
+                ? CLUE_COLORS[oldColor][1]
+                : CLUE_COLORS[color][1],
+            }}
+          >
+            <div className="text">{hide ? oldClues[1] : clues[1]}</div>
+            <Arrow direction={"right"} />
+          </div>
+        </div>
+        <div className="clueHole" />
+      </>
     );
   }
 }
