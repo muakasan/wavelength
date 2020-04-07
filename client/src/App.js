@@ -20,7 +20,8 @@ class Device extends Component {
     this.state = {
       gameState: {
         dialPosition: 0.5,
-        screenOpen: false,
+        screenClosed: false,
+        targetPosition: 0,
       },
       client: null,
     };
@@ -76,12 +77,19 @@ class Device extends Component {
   };
 
   screenHandleClicked = (event) => {
-    const {screenOpen} = this.state.gameState;
+    let { screenClosed, targetPosition } = this.state.gameState;
+
+    // TODO remove this, randomizes target position every time you open the screen
+    // just as a visual test
+    if (screenClosed) {
+      targetPosition = Math.random() * 0.9 + 0.05;
+    }
 
     this.setState(
       {
         gameState: {
-          screenOpen: !screenOpen,
+          screenClosed: !screenClosed,
+          targetPosition: targetPosition,
         },
       },
       () => {
@@ -91,7 +99,7 @@ class Device extends Component {
   };
 
   render() {
-    const { dialPosition, screenOpen } = this.state.gameState;
+    const { dialPosition, screenClosed, targetPosition } = this.state.gameState;
     const rotation = Math.PI * (dialPosition + 1.5);
 
     return (
@@ -111,18 +119,20 @@ class Device extends Component {
                 className="dial"
                 style={{ transform: `rotate(${rotation}rad)` }}
               />
-              <Target targetPosition={0.33} />
+              <Target targetPosition={targetPosition} />
               <div
                 className="screen"
-                style={{ transform: `rotate(${screenOpen ? 360 : 181}deg)` }}
+                style={{ transform: `rotate(${screenClosed ? 360 : 181}deg)` }}
               />
             </div>
 
             <div
-                className="screenHandle"
-                onMouseDown={this.screenHandleClicked}
-                style={{ transform: `rotate(${screenOpen ? 360 + 90 : 181 + 90}deg)` }}
-              />
+              className="screenHandle"
+              onMouseDown={this.screenHandleClicked}
+              style={{
+                transform: `rotate(${screenClosed ? 360 + 90 : 181 + 90}deg)`,
+              }}
+            />
           </div>
         </div>
       </div>

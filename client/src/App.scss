@@ -127,7 +127,7 @@ $wingShort: 65px;
   top: calc(#{$deviceDiameter} / 2 - 3px);
   left: $wingShort;
 
-  z-index: 3;
+  z-index: 4;
 }
 
 .device_wing_r {
@@ -144,7 +144,7 @@ $wingShort: 65px;
   top: calc(#{$deviceDiameter} / 2 - 3px);
   left: calc(#{$deviceDiameter} / 2);
 
-  z-index: 3;
+  z-index: 4;
 }
 
 $redDiameter: 125px;
@@ -162,7 +162,7 @@ $dialShadow: 0px 0px 4px rgba(0, 0, 0, 0.3);
   left: calc(#{$deviceDiameter} / 2 - #{$redDiameter} / 2);
 
   background-color: $red;
-  z-index: 4;
+  z-index: 5;
 
   box-shadow: $dialShadow;
 }
@@ -184,7 +184,7 @@ $dialOffset: 1-$dialHeight;
 
   box-shadow: $dialShadow;
 
-  z-index: 2;
+  z-index: 3;
 
   background-color: $red;
 }
@@ -205,7 +205,6 @@ $screenShadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
 
   transition: transform 1s ease;
 }
-
 
 $handleWidth: 20px;
 $handleHeight: 1.2;
