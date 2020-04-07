@@ -25,9 +25,21 @@ class Device extends Component {
         clues: ["Hot", "Cold"],
       },
       psychic: false,
+      controlsDisabled: false,
       client: null,
       roundNum: 0,
     };
+  }
+
+  disableControls() {
+    this.setState({
+      controlsDisabled: true,
+    });
+    window.setTimeout(() => {
+      this.setState({
+        controlsDisabled: false,
+      });
+    }, 1010);
   }
 
   componentDidMount() {
@@ -44,10 +56,11 @@ class Device extends Component {
       delete updatedState.targetPosition;
 
       // Reset peek on new round
-      const psychic =
-        updatedState.roundNum == gameState.roundNum
-          ? this.state.psychic
-          : false;
+      let psychic = this.state.psychic;
+      if (updatedState.roundNum != gameState.roundNum) {
+        psychic = false;
+        this.disableControls();
+      }
 
       this.setState({
         gameState: { ...gameState, ...updatedState },
@@ -67,15 +80,20 @@ class Device extends Component {
   }
 
   togglePsychicClicked = (event) => {
-    const { psychic } = this.state;
+    const { psychic, controlsDisabled } = this.state;
+
+    if (controlsDisabled) {
+      return;
+    }
+
     this.setState({
       psychic: !psychic,
     });
   };
 
   dialClicked = (event) => {
-    const { client, gameState, psychic } = this.state;
-    if (!gameState.screenClosed || psychic) {
+    const { client, gameState, psychic, controlsDisabled } = this.state;
+    if (!gameState.screenClosed || psychic || controlsDisabled) {
       return;
     }
 
@@ -110,8 +128,12 @@ class Device extends Component {
   };
 
   screenHandleClicked = (event) => {
-    let { client, gameState } = this.state;
+    let { client, gameState, controlsDisabled } = this.state;
     let { screenClosed, targetPosition } = gameState;
+
+    if (controlsDisabled) {
+      return;
+    }
 
     this.setState(
       {
