@@ -22,6 +22,7 @@ class Device extends Component {
         dialPosition: 0.5,
         screenClosed: true,
         targetPosition: 0,
+        clues: ["Hot", "Cold"],
       },
       client: null,
     };
@@ -47,7 +48,7 @@ class Device extends Component {
       window.setTimeout(() => {
         const gameState = this.state.gameState;
         this.setState({
-          gameState: {...gameState, targetPosition: targetPosition},
+          gameState: { ...gameState, targetPosition: targetPosition },
         });
       }, 1100);
     });
@@ -57,6 +58,11 @@ class Device extends Component {
   }
 
   dialClicked = (event) => {
+    const { client, gameState } = this.state;
+    if (!gameState.screenClosed) {
+      return;
+    }
+
     const rect = this.deviceInner.current.getBoundingClientRect();
 
     const xOrigin = rect.x + rect.width / 2;
@@ -73,8 +79,6 @@ class Device extends Component {
     let dialPosition = rotation / Math.PI - 0.5;
     dialPosition = Math.min(dialPosition, 0.95);
     dialPosition = Math.max(dialPosition, 0.05);
-
-    const { client, gameState } = this.state;
 
     this.setState(
       {
@@ -112,7 +116,7 @@ class Device extends Component {
   };
 
   render() {
-    const { dialPosition, screenClosed, targetPosition } = this.state.gameState;
+    const { dialPosition, screenClosed, targetPosition, clues } = this.state.gameState;
     const rotation = Math.PI * (dialPosition + 1.5);
 
     return (
@@ -149,11 +153,11 @@ class Device extends Component {
           </div>
           <div className="clue">
             <div className="clueLeft">
-              <div className="text">Underrated letter of the alphabet</div>
+              <div className="text">{clues[0]}</div>
               <Arrow direction={"left"} />
             </div>
             <div className="clueRight">
-              <div className="text">Overrated letter of the alphabet</div>
+              <div className="text">{clues[1]}</div>
               <Arrow direction={"right"} />
             </div>
           </div>
