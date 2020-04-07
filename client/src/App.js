@@ -48,7 +48,7 @@ class Device extends Component {
   }
 
   componentDidMount() {
-    const client = socketIOClient("http://127.0.0.1:5000/");
+    const client = socketIOClient("/");
 
     client.on("connect", () => {
       client.emit("requestGameState");

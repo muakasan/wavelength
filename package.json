@@ -1,0 +1,7 @@
+{
+    "name": "wavelength",
+    "version": "0.1.0",
+    "scripts": {
+        "postinstall": "npm install --prefix client && npm build --prefix client"
+    }
+}

@@ -140,4 +140,4 @@ def default_game_state():
 game_state = default_game_state()
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, port=8000)
