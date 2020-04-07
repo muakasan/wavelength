@@ -80,12 +80,23 @@ $innerDeviceHeight: $innerDeviceDiameter / 2;
   height: 100%;
   left: 0;
   top: 0;
-  
+
   transform-origin: bottom center;
 
-  transform: rotate(-172deg);
+  transform: rotate(-172.4deg);
+  content: "";
+}
+
+.target.four:before {
   background-color: #5a839b;
-  content: '';
+}
+
+.target.three:before {
+  background-color: #ed463b;
+}
+
+.target.two:before {
+  background-color: #ebaa21;
 }
 
 .target .number {
@@ -94,7 +105,9 @@ $innerDeviceHeight: $innerDeviceDiameter / 2;
   transform-origin: bottom center;
   font-size: 22px;
   font-weight: bold;
-  transform: rotate(-86deg);
+  transform: rotate(-86.25deg);
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 $wingShort: 65px;

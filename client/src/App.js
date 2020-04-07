@@ -95,19 +95,55 @@ class Device extends Component {
                 className="dial"
                 style={{ transform: `rotate(${rotation}rad)` }}
               />
-              <div className="target" style={{ transform: `rotate(26.8deg)` }}>
-                <span className="number">3</span>
-              </div>
-              <div className="target" style={{ transform: `rotate(20deg)` }}>
-                <span className="number">4</span>
-              </div>
-              <div className="target" style={{ transform: `rotate(13.2deg)` }}>
-                <span className="number">3</span>
-              </div>
+              <Target targetPosition={0.33} />
             </div>
           </div>
         </div>
       </div>
+    );
+  }
+}
+
+class Target extends Component {
+  render() {
+    const { targetPosition } = this.props;
+    const width = 7.5;
+    const rotation = 180 * targetPosition - width / 2;
+
+    return (
+      <>
+        <div
+          className={"target two"}
+          style={{ transform: `rotate(${rotation + 2 * width}deg)` }}
+        >
+          <span className="number">2</span>
+        </div>
+        <div
+          className={"target two"}
+          style={{ transform: `rotate(${rotation - 2 * width}deg)` }}
+        >
+          <span className="number">2</span>
+        </div>
+        <div
+          className={"target three"}
+          style={{ transform: `rotate(${rotation + width}deg)` }}
+        >
+          <span className="number">3</span>
+        </div>
+
+        <div
+          className={"target three"}
+          style={{ transform: `rotate(${rotation - width}deg)` }}
+        >
+          <span className="number">3</span>
+        </div>
+        <div
+          className={"target four"}
+          style={{ transform: `rotate(${rotation}deg)` }}
+        >
+          <span className="number">4</span>
+        </div>
+      </>
     );
   }
 }
