@@ -24,7 +24,9 @@ class Device extends Component {
         targetPosition: 0,
         clues: ["Hot", "Cold"],
       },
+      psychic: false,
       client: null,
+      roundNum: 0,
     };
   }
 
@@ -41,8 +43,15 @@ class Device extends Component {
       const targetPosition = updatedState.targetPosition;
       delete updatedState.targetPosition;
 
+      // Reset peek on new round
+      const psychic =
+        updatedState.roundNum == gameState.roundNum
+          ? this.state.psychic
+          : false;
+
       this.setState({
         gameState: { ...gameState, ...updatedState },
+        psychic: psychic,
       });
 
       window.setTimeout(() => {
@@ -50,16 +59,23 @@ class Device extends Component {
         this.setState({
           gameState: { ...gameState, targetPosition: targetPosition },
         });
-      }, 1100);
+      }, 1010);
     });
     this.setState({
       client: client,
     });
   }
 
+  togglePsychicClicked = (event) => {
+    const { psychic } = this.state;
+    this.setState({
+      psychic: !psychic,
+    });
+  };
+
   dialClicked = (event) => {
-    const { client, gameState } = this.state;
-    if (!gameState.screenClosed) {
+    const { client, gameState, psychic } = this.state;
+    if (!gameState.screenClosed || psychic) {
       return;
     }
 
@@ -109,6 +125,9 @@ class Device extends Component {
         if (screenClosed) {
           client.emit("reveal");
         } else {
+          this.setState({
+            psychic: false,
+          });
           client.emit("nextRound");
         }
       }
@@ -116,7 +135,8 @@ class Device extends Component {
   };
 
   render() {
-    const { dialPosition, screenClosed, targetPosition, clues } = this.state.gameState;
+    const { psychic, gameState } = this.state;
+    const { dialPosition, screenClosed, targetPosition, clues } = gameState;
     const rotation = Math.PI * (dialPosition + 1.5);
 
     return (
@@ -138,7 +158,7 @@ class Device extends Component {
               />
               <Target targetPosition={targetPosition} />
               <div
-                className="screen"
+                className={(psychic ? "peek" : "") + " screen"}
                 style={{ transform: `rotate(${screenClosed ? 360 : 181}deg)` }}
               />
             </div>
@@ -150,6 +170,9 @@ class Device extends Component {
                 transform: `rotate(${screenClosed ? 360 + 90 : 181 + 90}deg)`,
               }}
             />
+          </div>
+          <div className="togglePeek" onMouseDown={this.togglePsychicClicked}>
+            Psychic
           </div>
           <div className="clue">
             <div className="clueLeft">

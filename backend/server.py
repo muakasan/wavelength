@@ -41,13 +41,12 @@ def handle_next_round():
     game_state['screenClosed'] = True
     game_state['targetPosition'] = random_target_pos()
 
-    game_state['clueIdx'] += 1
+    game_state['roundNum'] += 1
 
-    if game_state['clueIdx'] >= len(possible_clues):
-        game_state['clueIdx'] = 0
+    if game_state['roundNum'] % len(possible_clues) == 0:
         random.shuffle(possible_clues)
-        
-    game_state['clues'] = possible_clues[game_state['clueIdx']]
+
+    game_state['clues'] = possible_clues[game_state['roundNum'] % len(possible_clues)]
 
     socketio.emit('gameState', game_state, json=True, broadcast=True)
 
@@ -59,7 +58,7 @@ game_state = {
     'screenClosed': True,
     'targetPosition': random_target_pos(),
     'clues': possible_clues[0],
-    'clueIdx': 0,
+    'roundNum': 0,
 }
 
 if __name__ == '__main__':

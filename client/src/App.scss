@@ -211,6 +211,10 @@ $screenShadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
   border-top-right-radius: $innerDeviceHeight;
 }
 
+.screen.peek {
+  background-color: transparentize(#6db5b2, $amount: 0.5);
+}
+
 $handleWidth: 20px;
 $handleHeight: 1.2;
 $handleOffset: 1-$handleHeight;
@@ -340,4 +344,26 @@ $arrowWidth: 80px;
 .left {
   transform: rotate(135deg);
   left: calc((#{$clueWidth} / 2 - #{$arrowWidth}) / 2);
+}
+
+.togglePeek {
+  position: absolute;
+
+  right: 90px;
+  bottom: 270px;
+
+  width: 100px;
+  height: 100px;
+
+  border-radius: 100px;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
+
+  background-color: #e35f2d;
+
+  z-index: 5;
+
+  line-height: 100px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
 }
