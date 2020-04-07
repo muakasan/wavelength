@@ -1,6 +1,9 @@
 .App {
   padding: 20px;
   text-align: center;
+
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 $red: #cd2335;
@@ -106,14 +109,12 @@ $innerDeviceHeight: $innerDeviceDiameter / 2;
   font-size: 22px;
   font-weight: bold;
   transform: rotate(-86.25deg);
-  user-select: none;
-  -webkit-user-select: none;
 }
 
 $wingShort: 65px;
 
 .device_wing_l {
-  transform: rotate(7deg);
+  transform: rotate(6deg);
   transform-origin: bottom right;
   width: calc(#{$deviceDiameter} / 2 - #{$wingShort});
   background-color: #0d0e33;
@@ -123,14 +124,14 @@ $wingShort: 65px;
   left: 90px;
   position: absolute;
 
-  top: calc(#{$deviceDiameter} / 2 + 2px);
+  top: calc(#{$deviceDiameter} / 2 - 3px);
   left: $wingShort;
 
   z-index: 3;
 }
 
 .device_wing_r {
-  transform: rotate(-7deg);
+  transform: rotate(-6deg);
   transform-origin: bottom left;
   width: calc(#{$deviceDiameter} / 2 - #{$wingShort});
   background-color: #0d0e33;
@@ -140,13 +141,14 @@ $wingShort: 65px;
   left: 90px;
   position: absolute;
 
-  top: calc(#{$deviceDiameter} / 2 + 2px);
+  top: calc(#{$deviceDiameter} / 2 - 3px);
   left: calc(#{$deviceDiameter} / 2);
 
   z-index: 3;
 }
 
 $redDiameter: 125px;
+$dialShadow: 0px 0px 4px rgba(0, 0, 0, 0.3);
 
 .device_red {
   position: absolute;
@@ -161,6 +163,8 @@ $redDiameter: 125px;
 
   background-color: $red;
   z-index: 4;
+
+  box-shadow: $dialShadow;
 }
 
 $dialWidth: 14px;
@@ -178,7 +182,51 @@ $dialOffset: 1-$dialHeight;
   left: calc(#{$innerDeviceDiameter} / 2 - #{$dialWidth} / 2);
   border-radius: $dialWidth;
 
+  box-shadow: $dialShadow;
+
   z-index: 2;
 
   background-color: $red;
+}
+
+$screenShadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
+
+.screen {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  transform-origin: bottom center;
+  background-color: #6db5b2;
+
+  box-shadow: $screenShadow;
+
+  transition: transform 1s ease;
+}
+
+
+$handleWidth: 20px;
+$handleHeight: 1.2;
+$handleOffset: 1-$handleHeight;
+
+.screenHandle {
+  position: absolute;
+  transform-origin: bottom center;
+
+  height: calc(#{$deviceDiameter} / 2 * #{$handleHeight});
+  width: $handleWidth;
+
+  top: calc((#{$deviceDiameter} / 2) * #{$handleOffset});
+  left: calc(#{$deviceDiameter} / 2 - #{$handleWidth} / 2);
+  border-radius: $handleWidth;
+
+  box-shadow: $screenShadow;
+
+  z-index: 2;
+
+  background-color: #6db5b2;
+
+  transition: transform 1s ease;
 }

@@ -20,6 +20,7 @@ class Device extends Component {
     this.state = {
       gameState: {
         dialPosition: 0.5,
+        screenOpen: false,
       },
       client: null,
     };
@@ -74,8 +75,23 @@ class Device extends Component {
     );
   };
 
+  screenHandleClicked = (event) => {
+    const {screenOpen} = this.state.gameState;
+
+    this.setState(
+      {
+        gameState: {
+          screenOpen: !screenOpen,
+        },
+      },
+      () => {
+        // TODO sync with server
+      }
+    );
+  };
+
   render() {
-    const { dialPosition } = this.state.gameState;
+    const { dialPosition, screenOpen } = this.state.gameState;
     const rotation = Math.PI * (dialPosition + 1.5);
 
     return (
@@ -96,7 +112,17 @@ class Device extends Component {
                 style={{ transform: `rotate(${rotation}rad)` }}
               />
               <Target targetPosition={0.33} />
+              <div
+                className="screen"
+                style={{ transform: `rotate(${screenOpen ? 360 : 181}deg)` }}
+              />
             </div>
+
+            <div
+                className="screenHandle"
+                onMouseDown={this.screenHandleClicked}
+                style={{ transform: `rotate(${screenOpen ? 360 + 90 : 181 + 90}deg)` }}
+              />
           </div>
         </div>
       </div>
