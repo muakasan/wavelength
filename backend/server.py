@@ -22,12 +22,20 @@ def handle_request_game_state():
 
 @socketio.on('setDialPosition')
 def handle_set_dial_position(j):
+    if game_state['complete']:
+        socketio.emit('gameState', game_state, json=True, broadcast=True)
+        return
+
     if game_state['screenClosed']:
         game_state['dialPosition'] = j['dialPosition']
     socketio.emit('gameState', game_state, json=True, broadcast=True)
 
 @socketio.on('reveal')
 def handle_reveal():
+    if game_state['complete']:
+        socketio.emit('gameState', game_state, json=True, broadcast=True)
+        return
+
     game_state['screenClosed'] = False
 
     # TODO figure out if you always get one point, and hi/lo
@@ -44,10 +52,18 @@ def handle_reveal():
     game_state['score'][game_state['turn']] += score
     game_state['lastScore'] = score
 
+    # TODO handle ties, sudden death (lots of work)
+    if score >= 10:
+        game_state['complete'] = True
+
     socketio.emit('gameState', game_state, json=True, broadcast=True)
 
 @socketio.on('nextRound')
 def handle_next_round():
+    if game_state['complete']:
+        socketio.emit('gameState', game_state, json=True, broadcast=True)
+        return
+
     # TODO gross make this nicer
     global possible_clues
 
@@ -67,19 +83,33 @@ def handle_next_round():
 
     socketio.emit('gameState', game_state, json=True, broadcast=True)
 
+
+@socketio.on('newGame')
+def handle_new_game():
+    global game_state, possible_clues
+
+    random.shuffle(possible_clues)
+    game_state = default_game_state()
+    socketio.emit('gameState', game_state, json=True, broadcast=True)
+
 def random_target_pos():
     return random.uniform(0.05, 0.95)
 
-game_state = {
-    'dialPosition': 0.5,
-    'screenClosed': True,
-    'targetPosition': random_target_pos(),
-    'clues': possible_clues[0],
-    'roundNum': 0,
-    'score': [0, 1],
-    'turn': 0,
-    'lastScore': 0,
-}
+def default_game_state():
+    return {
+        'dialPosition': 0.5,
+        'screenClosed': True,
+        'targetPosition': random_target_pos(),
+        'clues': possible_clues[0],
+        'roundNum': 0,
+        'score': [0, 1],
+        'turn': 0,
+        'lastScore': 0,
+        'complete': False,
+        'gameId': random.randint(1, 1000000)
+    }
+
+game_state = default_game_state()
 
 if __name__ == '__main__':
     socketio.run(app)

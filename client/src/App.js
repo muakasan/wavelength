@@ -30,6 +30,7 @@ class Device extends Component {
       controlsDisabled: false,
       client: null,
       roundNum: 0,
+      gameId: 0,
     };
   }
 
@@ -59,7 +60,7 @@ class Device extends Component {
 
       // Reset peek on new round
       let psychic = this.state.psychic;
-      if (updatedState.roundNum != gameState.roundNum) {
+      if (updatedState.roundNum != gameState.roundNum || updatedState.gameId != gameState.gameId) {
         psychic = false;
         this.disableControls();
       }
@@ -91,6 +92,16 @@ class Device extends Component {
     this.setState({
       psychic: !psychic,
     });
+  };
+
+  newGameClicked = (event) => {
+    let { client, controlsDisabled } = this.state;
+
+    if (controlsDisabled) {
+      return;
+    }
+
+    this.state.client.emit("newGame");
   };
 
   dialClicked = (event) => {
@@ -222,6 +233,9 @@ class Device extends Component {
           </div>
           <div className={(turn == 1 ? "turn" : "") + " score2"}>
             {score[1]}
+          </div>
+          <div className="newGame" onMouseDown={this.newGameClicked}>
+            New Game
           </div>
         </div>
       </div>
