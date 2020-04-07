@@ -53,7 +53,7 @@ def handle_reveal():
     game_state['lastScore'] = score
 
     # TODO handle ties, sudden death (lots of work)
-    if score >= 10:
+    if game_state['score'][0] >= 10 or game_state['score'][1] >= 10:
         game_state['complete'] = True
 
     socketio.emit('gameState', game_state, json=True, broadcast=True)

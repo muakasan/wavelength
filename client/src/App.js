@@ -105,6 +105,7 @@ class Device extends Component {
       return;
     }
 
+    this.disableControls();
     this.state.client.emit("newGame");
   };
 
@@ -237,6 +238,7 @@ class Device extends Component {
   }
 }
 
+// All clue card colors
 const CLUE_COLORS = [
   ["#d0e6cd", "#1f9ec1"],
   ["#694e72", "#e7dfc9"],
@@ -259,10 +261,6 @@ const CLUE_COLORS = [
   ["#cfe2d7", "#ec5a3d"],
 ];
 
-function randomClueColor() {
-  return CLUE_COLORS[Math.floor(Math.random() * CLUE_COLORS.length)];
-}
-
 class Clue extends Component {
   constructor(props) {
     super(props);
@@ -274,9 +272,11 @@ class Clue extends Component {
     };
   }
   componentDidUpdate(prevProps, prevState) {
+    // Only animate if clue changes
     if (
       prevProps.clues[0].length > 0 &&
-      JSON.stringify(prevProps.clues) != JSON.stringify(this.props.clues)
+      (JSON.stringify(prevProps.clues) != JSON.stringify(this.props.clues) ||
+        prevProps.color != this.props.color)
     ) {
       this.setState({
         hide: true,
