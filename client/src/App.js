@@ -23,6 +23,8 @@ class Device extends Component {
         screenClosed: true,
         targetPosition: 0,
         clues: ["Hot", "Cold"],
+        score: [0, 0],
+        turn: 0,
       },
       psychic: false,
       controlsDisabled: false,
@@ -158,7 +160,14 @@ class Device extends Component {
 
   render() {
     const { psychic, gameState } = this.state;
-    const { dialPosition, screenClosed, targetPosition, clues } = gameState;
+    const {
+      dialPosition,
+      screenClosed,
+      targetPosition,
+      clues,
+      score,
+      turn,
+    } = gameState;
     const rotation = Math.PI * (dialPosition + 1.5);
 
     return (
@@ -207,6 +216,13 @@ class Device extends Component {
             </div>
           </div>
           <div className="clueHole" />
+
+          <div className={(turn == 0 ? "turn" : "") + " score1"}>
+            {score[0]}
+          </div>
+          <div className={(turn == 1 ? "turn" : "") + " score2"}>
+            {score[1]}
+          </div>
         </div>
       </div>
     );

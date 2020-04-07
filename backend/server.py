@@ -30,7 +30,20 @@ def handle_set_dial_position(j):
 def handle_reveal():
     game_state['screenClosed'] = False
 
-    # TODO score here
+    # TODO figure out if you always get one point, and hi/lo
+    distance = abs(game_state['targetPosition'] - game_state['dialPosition'])
+
+    score = 0
+    if distance * 180 <= 7.5 * 0.5:
+        score = 4
+    elif distance * 180 <= 7.5 * 1.5:
+        score = 3
+    elif distance * 180 <= 7.5 * 2.5:
+        score = 2
+
+    game_state['score'][game_state['turn']] += score
+    game_state['lastScore'] = score
+
     socketio.emit('gameState', game_state, json=True, broadcast=True)
 
 @socketio.on('nextRound')
@@ -42,6 +55,10 @@ def handle_next_round():
     game_state['targetPosition'] = random_target_pos()
 
     game_state['roundNum'] += 1
+
+    # second turn, catch-up mechanic
+    if not (game_state['lastScore'] >= 4 and game_state['score'][game_state['turn']] < game_state['score'][1 - game_state['turn']]):
+        game_state['turn'] = 1 - game_state['turn']
 
     if game_state['roundNum'] % len(possible_clues) == 0:
         random.shuffle(possible_clues)
@@ -59,6 +76,9 @@ game_state = {
     'targetPosition': random_target_pos(),
     'clues': possible_clues[0],
     'roundNum': 0,
+    'score': [0, 1],
+    'turn': 0,
+    'lastScore': 0,
 }
 
 if __name__ == '__main__':
