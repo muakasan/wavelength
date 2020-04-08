@@ -7,14 +7,7 @@ app = Flask(__name__, static_folder='../client/build')
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, cors_allowed_origins='*')
 
-# TODO load
-possible_clues = [
-    ('Underrated letter of the alphabet', 'Overrated letter of the alphabet'),
-    ('Weird', 'Strange'),
-    ('Small', 'Tiny'),
-    ('For kids', 'For adults'),
-]
-random.shuffle(possible_clues)
+possible_clues = []
 clue_idx = 0
 
 @app.route('/', defaults={'path': ''})
@@ -25,6 +18,15 @@ def serve(path):
     else:
         return send_from_directory(app.static_folder, 'index.html')
 
+def load_clues(filename):
+    global possible_clues
+    with open(filename) as f:
+        next(f) # Gets read of header line
+        for line in f:
+            print(line)
+            possible_clues.append(tuple(line.split(',')))
+    random.shuffle(possible_clues)
+    
 @socketio.on('requestGameState')
 def handle_request_game_state():
     socketio.emit('gameState', game_state, json=True, broadcast=True)
@@ -94,7 +96,7 @@ def handle_next_round():
 
     game_state['screenClosed'] = True
     game_state['targetPosition'] = random_target_pos()
-
+ 
     game_state['roundNum'] += 1
 
     # second turn, catch-up mechanic
@@ -102,6 +104,7 @@ def handle_next_round():
         game_state['turn'] = 1 - game_state['turn']
 
     game_state['clueColor'] = random.randint(0, 19-1)
+    
     if game_state['roundNum'] % len(possible_clues) == 0:
         random.shuffle(possible_clues)
 
@@ -137,6 +140,8 @@ def default_game_state():
         'gameId': random.randint(1, 1000000)
     }
 
+
+load_clues('wavelength.csv')
 game_state = default_game_state()
 
 if __name__ == '__main__':
