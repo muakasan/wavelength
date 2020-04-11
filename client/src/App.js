@@ -1,15 +1,62 @@
 import React, { Component } from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useParams,
+  useHistory,
+} from "react-router-dom";
 import socketIOClient from "socket.io-client";
 import "./App.scss";
 
-class App extends Component {
+export default function App() {
+  return (
+    <Router>
+      <Switch>
+        <Route exact path="/" component={Homepage} />
+
+        <Route path="/:lobbyId" children={<Game />} />
+      </Switch>
+    </Router>
+  );
+}
+
+class Homepage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      formText: "",
+    };
+  }
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+    const { formText } = this.state;
+    this.props.history.push("/" + formText + "/");
+  };
+
+  onChange = (event) => {
+    this.setState({
+      formText: event.target.value,
+    });
+  };
+
   render() {
+    const { formText } = this.state;
     return (
-      <div className="App">
-        <Device />
+      <div className="homepage">
+        <h1>WAVELENGTH</h1>
+        <form onSubmit={this.handleSubmit}>
+          <input type="text" value={formText} onChange={this.onChange} />
+        </form>
       </div>
     );
   }
+}
+
+function Game() {
+  let { lobbyId } = useParams();
+  return <Device lobbyId={lobbyId} />;
 }
 
 class Device extends Component {
@@ -49,9 +96,10 @@ class Device extends Component {
 
   componentDidMount() {
     const client = socketIOClient("/");
+    const { lobbyId } = this.props;
 
     client.on("connect", () => {
-      client.emit("requestGameState");
+      client.emit("requestGameState", lobbyId);
     });
     client.on("gameState", (updatedState) => {
       const gameState = this.state.gameState;
@@ -101,6 +149,7 @@ class Device extends Component {
 
   leftRightClicked = (event) => {
     const { client, gameState, psychic, controlsDisabled } = this.state;
+    const { lobbyId } = this.props;
 
     if (!gameState.screenClosed || psychic || controlsDisabled) {
       return;
@@ -114,24 +163,26 @@ class Device extends Component {
         },
       },
       () => {
-        client.emit("setLeftRight", this.state.gameState);
+        client.emit("setLeftRight", lobbyId, this.state.gameState.leftRight);
       }
     );
   };
 
   newGameClicked = (event) => {
     let { client, controlsDisabled } = this.state;
+    const { lobbyId } = this.props;
 
     if (controlsDisabled) {
       return;
     }
 
     this.disableControls();
-    this.state.client.emit("newGame");
+    this.state.client.emit("newGame", lobbyId);
   };
 
   dialClicked = (event) => {
     const { client, gameState, psychic, controlsDisabled } = this.state;
+    const { lobbyId } = this.props;
     if (!gameState.screenClosed || psychic || controlsDisabled) {
       return;
     }
@@ -161,7 +212,11 @@ class Device extends Component {
         },
       },
       () => {
-        client.emit("setDialPosition", this.state.gameState);
+        client.emit(
+          "setDialPosition",
+          lobbyId,
+          this.state.gameState.dialPosition
+        );
       }
     );
   };
@@ -169,6 +224,7 @@ class Device extends Component {
   screenHandleClicked = (event) => {
     let { client, gameState, controlsDisabled } = this.state;
     let { screenClosed, targetPosition } = gameState;
+    const { lobbyId } = this.props;
 
     if (controlsDisabled) {
       return;
@@ -184,12 +240,12 @@ class Device extends Component {
       },
       () => {
         if (screenClosed) {
-          client.emit("reveal");
+          client.emit("reveal", lobbyId);
         } else {
           this.setState({
             psychic: false,
           });
-          client.emit("nextRound");
+          client.emit("nextRound", lobbyId);
         }
       }
     );
@@ -447,5 +503,3 @@ class Target extends Component {
     );
   }
 }
-
-export default App;
