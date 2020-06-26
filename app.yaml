@@ -1,0 +1,2 @@
+runtime: python37
+entrypoint: gunicorn --chdir ./backend --worker-class eventlet -w 1 server:app
