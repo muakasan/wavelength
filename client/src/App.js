@@ -95,7 +95,7 @@ class Device extends Component {
   }
 
   componentDidMount() {
-    const client = socketIOClient("/");
+    const client = socketIOClient(":8080/");
     const { lobbyId } = this.props;
 
     client.on("connect", () => {
@@ -285,7 +285,7 @@ class Device extends Component {
               <Target targetPosition={targetPosition} />
               <div
                 className={(psychic ? "peek" : "") + " screen"}
-                style={{ transform: `rotate(${screenClosed ? 360 : 181}deg)` }}
+                style={{ transform: `rotate(${screenClosed ? 360 : 187}deg)` }}
               />
             </div>
 
@@ -293,9 +293,17 @@ class Device extends Component {
               className="screenHandle"
               onMouseDown={this.screenHandleClicked}
               style={{
-                transform: `rotate(${screenClosed ? 360 + 90 : 181 + 90}deg)`,
+                transform: `rotate(${screenClosed ? 356.5 : 183.5}deg)`,
               }}
-            />
+            >
+              <div
+                className={
+                  (screenClosed ? "" : "flipped") + " screenHandleText"
+                }
+              >
+                <span>{screenClosed ? "Reveal" : "Next Round"}</span>
+              </div>
+            </div>
           </div>
           <div className="togglePeek" onMouseDown={this.togglePsychicClicked}>
             Psychic
@@ -306,17 +314,61 @@ class Device extends Component {
             psychic={psychic}
           />
           <Clue clues={clues} color={clueColor} />
-          <div className={(turn == 0 ? "turn" : "") + " score1"}>
-            {score[0]}
+          <div className={(turn == 0 ? "turn" : "") + " score leftBrain"}>
+            <LeftBrain />
+            <span className="value">{score[0]}</span>
           </div>
-          <div className={(turn == 1 ? "turn" : "") + " score2"}>
-            {score[1]}
+          <div className={(turn == 1 ? "turn" : "") + " score rightBrain"}>
+            <RightBrain />
+            <span className="value">{score[1]}</span>
           </div>
           <div className="newGame" onMouseDown={this.newGameClicked}>
             New Game
           </div>
         </div>
       </div>
+    );
+  }
+}
+
+class LeftBrain extends Component {
+  render() {
+    return (
+      <svg
+        className="brain"
+        xmlns="http://www.w3.org/2000/svg"
+        version="1.1"
+        viewBox="0 0 171 205"
+      >
+        <g>
+          <path
+            fill="#dda124"
+            fillOpacity="1"
+            d="M44.424 179.395c-.77-15.14-2.911-28.43-5.516-34.25-.985-2.2-5.712-8.725-10.504-14.5-4.793-5.775-10.299-13.186-12.235-16.469-3.62-6.137-7.138-17.687-7.735-25.394-.772-6.724-.388-9.904.322-15.3.646-5.04 2.055-11.775 3.13-14.968 4.463-13.246 12.902-23.132 17.351-27.75 10.34-10.728 22.696-17.44 37.813-20.539 15.26-3.128 29.884-1.158 44.292 5.97 16.036 7.93 28.824 20.408 36.289 35.408 5.092 7.41 3.728 15.365 3.746 24 .038 18.257.346 19.5 7.952 32.021 4.298 7.075 4.55 11.061.879 13.949-1.45 1.14-3.42 2.072-4.378 2.072-2.718 0-4.31 2.64-3.633 6.024.448 2.24.614 4.408-1.39 5.012-2.242.676-3.525 1.942-1.4 4.364 1.001 1.142-.232 3.989-1.592 6.653-1.732 3.397-2.055 5.267-1.557 9.021.374 2.823.163 5.757-.524 7.264-1.954 4.29-5.18 4.918-19.005 3.7-6.812-.6-13.512-1.303-14.887-1.562-5.497-1.038-7 2.603-7 16.958v11.566H45.1z"
+          ></path>
+        </g>
+      </svg>
+    );
+  }
+}
+
+class RightBrain extends Component {
+  render() {
+    return (
+      <svg
+        className="brain"
+        xmlns="http://www.w3.org/2000/svg"
+        version="1.1"
+        viewBox="0 0 171 205"
+      >
+        <g>
+          <path
+            fill="#e35f2d"
+            fillOpacity="1"
+            d="M126.356 179.395c.771-15.14 2.912-28.43 5.517-34.25.985-2.2 5.712-8.725 10.504-14.5 4.793-5.775 10.298-13.186 12.235-16.469 3.62-6.137 7.138-17.687 7.735-25.394.772-6.724.388-9.904-.322-15.3-.646-5.04-2.055-11.775-3.13-14.968-4.463-13.246-12.902-23.132-17.352-27.75-10.34-10.728-22.695-17.44-37.812-20.539-15.26-3.128-29.884-1.158-44.293 5.97-16.035 7.93-28.823 20.408-36.288 35.408-5.092 7.41-3.728 15.365-3.746 24-.038 18.257-.347 19.5-7.953 32.021-4.297 7.075-4.548 11.061-.878 13.949 1.45 1.14 3.42 2.072 4.378 2.072 2.717 0 4.31 2.64 3.633 6.024-.448 2.24-.614 4.408 1.39 5.012 2.242.676 3.525 1.942 1.4 4.364-1.001 1.142.232 3.989 1.592 6.653 1.732 3.397 2.055 5.267 1.557 9.021-.374 2.823-.163 5.757.523 7.264 1.955 4.29 5.18 4.918 19.006 3.7 6.812-.6 13.512-1.303 14.887-1.562 5.497-1.038 7 2.603 7 16.958v11.566H125.681z"
+          ></path>
+        </g>
+      </svg>
     );
   }
 }
