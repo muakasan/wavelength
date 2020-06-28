@@ -1,0 +1,13 @@
+*/node_modules/
+*/__pycache__/
+Dockerfile
+
+# -*- mode: gitignore; -*-
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*

@@ -390,15 +390,11 @@ $arrowWidth: 80px;
 
 .leftBrain {
   left: -35px;
-  //background-color: #d29627;
 }
 
 .rightBrain {
   right: -35px;
-  //background-color: #e35f2d;
 }
-
-
 
 .score {
   position: absolute;
@@ -415,8 +411,6 @@ $arrowWidth: 80px;
   font-size: 64px;
 
   font-weight: bold;
-
-  //box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
 }
 
 .value {
@@ -443,9 +437,7 @@ $arrowWidth: 80px;
   transition: stroke-width 0.15s ease-out;
 }
 
-.score1.turn .brain {
-  //margin: -5px;
-  //border: 5px solid black;
+.score.turn .brain {
   stroke-width: 7px;
 }
 

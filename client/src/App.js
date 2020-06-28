@@ -96,7 +96,7 @@ class Device extends Component {
   }
 
   componentDidMount() {
-    const client = socketIOClient(":8080/");
+    const client = socketIOClient("/");
     const { lobbyId } = this.props;
 
     client.on("connect", () => {
