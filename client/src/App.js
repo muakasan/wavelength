@@ -81,6 +81,7 @@ class Device extends Component {
       client: null,
       roundNum: 0,
       gameId: 0,
+      loading: true,
     };
   }
 
@@ -96,7 +97,7 @@ class Device extends Component {
   }
 
   componentDidMount() {
-    const serverUrl = process.env.NODE_ENV === 'production' ? '/' : ':8080/';
+    const serverUrl = process.env.NODE_ENV === "production" ? "/" : ":8080/";
     const client = socketIOClient(serverUrl);
     const { lobbyId } = this.props;
 
@@ -109,7 +110,9 @@ class Device extends Component {
 
       // If we update target position right away it reveals the result...
       const targetPosition = updatedState.targetPosition;
-      delete updatedState.targetPosition;
+      if (!this.state.loading) {
+        delete updatedState.targetPosition;
+      }
 
       // Reset peek on new round
       let psychic = this.state.psychic;
@@ -124,6 +127,7 @@ class Device extends Component {
       this.setState({
         gameState: { ...gameState, ...updatedState },
         psychic: psychic,
+        loading: false,
       });
 
       window.setTimeout(() => {
@@ -255,7 +259,7 @@ class Device extends Component {
   };
 
   render() {
-    const { psychic, gameState } = this.state;
+    const { psychic, gameState, loading } = this.state;
     const {
       dialPosition,
       screenClosed,
@@ -265,10 +269,25 @@ class Device extends Component {
       score,
       turn,
       leftRight,
-      complete
+      complete,
     } = gameState;
     const rotation = Math.PI * (dialPosition + 1.5);
     const winner = score[0] <= score[1];
+
+    if (loading) {
+      return (
+        <div className="device_parent">
+          <div className="device_outer">
+            <div className="device">
+              <div className="device_red" />
+              <div className="device_wing_l" />
+              <div className="device_wing_r" />
+              <div className="device_inner" />
+            </div>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div className="device_parent">
@@ -296,7 +315,9 @@ class Device extends Component {
 
             <div
               className="screenHandle"
-              onMouseDown={complete ? this.newGameClicked : this.screenHandleClicked}
+              onMouseDown={
+                complete ? this.newGameClicked : this.screenHandleClicked
+              }
               style={{
                 transform: `rotate(${screenClosed ? 356.5 : 183.5}deg)`,
               }}

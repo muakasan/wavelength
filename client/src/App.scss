@@ -105,7 +105,7 @@ $innerDeviceHeight: $innerDeviceDiameter / 2;
   transform-origin: bottom center;
   font-size: 22px;
   font-weight: bold;
-  transform: translate(-50%, 0) rotate(-86.25deg) ;
+  transform: translate(-50%, 0) rotate(-86.25deg);
 }
 
 $wingShort: 65px;
@@ -484,7 +484,7 @@ $arrowWidth: 80px;
   font-weight: bold;
   padding-top: 15px;
   font-size: 24px;
-} 
+}
 
 .gameOver .brain {
   width: 140px;
