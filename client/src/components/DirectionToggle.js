@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+import { Direction } from "../enums";
 
-export default class LeftRight extends Component {
+export default class DirectionToggle extends Component {
   constructor(props) {
     super(props);
 
@@ -10,13 +11,13 @@ export default class LeftRight extends Component {
   }
 
   render() {
-    const { leftRight, psychic, onMouseDown } = this.props;
+    const { direction, psychic, onMouseDown } = this.props;
     const { hover } = this.state;
 
     const cls =
       (hover && !psychic ? "hovered" : "") +
-      (leftRight === 1 ? " toggled" : "") +
-      " leftRight";
+      (direction === Direction.RIGHT ? " toggled" : "") +
+      " directionToggle";
 
     return (
       <div
@@ -30,7 +31,7 @@ export default class LeftRight extends Component {
         onMouseLeave={() => this.setState({ hover: false })}
         onMouseEnter={() => this.setState({ hover: true })}
       >
-        <div className="leftRightInner">
+        <div className="directionToggleInner">
           <div className="leftBox">Left</div>
           <div className="rightBox">Right</div>
         </div>

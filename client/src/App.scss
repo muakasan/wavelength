@@ -520,7 +520,7 @@ $arrowWidth: 80px;
   cursor: pointer;
 }
 
-.leftRight {
+.directionToggle {
   position: absolute;
 
   left: 90px;
@@ -539,7 +539,7 @@ $arrowWidth: 80px;
   cursor: pointer;
 }
 
-.leftRightInner {
+.directionToggleInner {
   position: absolute;
 
   left: 0;
@@ -551,11 +551,11 @@ $arrowWidth: 80px;
   transition: left 0.1s;
 }
 
-.toggled .leftRightInner {
+.toggled .directionToggleInner {
   left: -80px;
 }
 
-.hovered .leftRightInner {
+.hovered .directionToggleInner {
   left: -40px;
 }
 

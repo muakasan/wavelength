@@ -1,7 +1,31 @@
 from typing import List, Dict, Tuple, Any
-from wavelength.clues import CluePool, get_or_load_clues
+from enum import Enum
 from dataclasses import dataclass, field, asdict
 import random
+
+from wavelength.clues import CluePool, get_or_load_clues
+
+
+class Team(str, Enum):
+    LEFT_BRAIN = "left_brain"
+    RIGHT_BRAIN = "right_brain"
+
+    def other(self) -> "Team":
+        if self == Team.LEFT_BRAIN:
+            return Team.RIGHT_BRAIN
+        else:
+            return Team.LEFT_BRAIN
+
+
+class Direction(str, Enum):
+    LEFT = "left"
+    RIGHT = "right"
+
+    def other(self) -> "Direction":
+        if self == Team.LEFT:
+            return Team.RIGHT
+        else:
+            return Team.LEFT
 
 
 @dataclass
@@ -13,10 +37,11 @@ class GameState:
     clues: Tuple[str] = field(default_factory=lambda: ())
     clueColor: int = 0
     roundNum: int = 0
-    score: List[int] = field(default_factory=lambda: [0, 0])
-    turn: int = 0
-    lastScore: int = 0
-    leftRight: int = 0
+    score: Dict[Team, int] = field(
+        default_factory=lambda: {Team.LEFT_BRAIN: 0, Team.RIGHT_BRAIN: 0}
+    )
+    turn: Team = Team.LEFT_BRAIN
+    direction: Direction = Direction.LEFT
     complete: bool = False
 
     def encode(self) -> Dict[str, Any]:

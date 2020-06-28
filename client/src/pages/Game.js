@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import {
-  useParams,
-} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import socketIOClient from "socket.io-client";
 
 import { LeftBrain, RightBrain } from "../components/Shapes";
-import LeftRight from "../components/LeftRight";
+import DirectionToggle from "../components/DirectionToggle";
 import Clue from "../components/Clue";
 import Target from "../components/Target";
+import ScoreIndicator from "../components/ScoreIndicator";
+import { Team, Direction } from "../enums";
 
 export default function Game() {
   let { lobbyId } = useParams();
@@ -20,17 +20,7 @@ class Device extends Component {
 
     this.deviceInner = React.createRef();
     this.state = {
-      gameState: {
-        dialPosition: 0.5,
-        screenClosed: true,
-        targetPosition: 0,
-        clues: ["", ""],
-        clueColor: 0,
-        score: [0, 0],
-        turn: 0,
-        complete: false,
-        leftRight: 0,
-      },
+      gameState: {},
       psychic: false,
       controlsDisabled: false,
       client: null,
@@ -109,7 +99,7 @@ class Device extends Component {
     });
   };
 
-  leftRightClicked = (event) => {
+  directionToggleClicked = (event) => {
     const { client, gameState, psychic, controlsDisabled } = this.state;
     const { lobbyId } = this.props;
 
@@ -121,11 +111,11 @@ class Device extends Component {
       {
         gameState: {
           ...gameState,
-          leftRight: 1 - gameState.leftRight,
+          direction: Direction.getOther(gameState.direction),
         },
       },
       () => {
-        client.emit("setLeftRight", lobbyId, this.state.gameState.leftRight);
+        client.emit("setDirection", lobbyId, this.state.gameState.direction);
       }
     );
   };
@@ -215,19 +205,6 @@ class Device extends Component {
 
   render() {
     const { psychic, gameState, loading } = this.state;
-    const {
-      dialPosition,
-      screenClosed,
-      targetPosition,
-      clues,
-      clueColor,
-      score,
-      turn,
-      leftRight,
-      complete,
-    } = gameState;
-    const rotation = Math.PI * (dialPosition + 1.5);
-    const winner = score[0] <= score[1];
 
     if (loading) {
       return (
@@ -243,6 +220,23 @@ class Device extends Component {
         </div>
       );
     }
+
+    const {
+      dialPosition,
+      screenClosed,
+      targetPosition,
+      clues,
+      clueColor,
+      score,
+      turn,
+      direction,
+      complete,
+    } = gameState;
+    const rotation = Math.PI * (dialPosition + 1.5);
+    const winner =
+      score[Team.LEFT_BRAIN] <= score[Team.RIGHT_BRAIN]
+        ? Team.RIGHT_BRAIN
+        : Team.LEFT_BRAIN;
 
     return (
       <div className="device_parent">
@@ -289,23 +283,25 @@ class Device extends Component {
           <div className="togglePeek" onMouseDown={this.togglePsychicClicked}>
             Psychic
           </div>
-          <LeftRight
-            leftRight={leftRight}
-            onMouseDown={this.leftRightClicked}
+          <DirectionToggle
+            direction={direction}
+            onMouseDown={this.directionToggleClicked}
             psychic={psychic}
           />
           <Clue clues={clues} color={clueColor} />
-          <div className={(turn === 0 ? "turn" : "") + " score leftBrain"}>
-            <LeftBrain />
-            <span className="value">{score[0]}</span>
-          </div>
-          <div className={(turn === 1 ? "turn" : "") + " score rightBrain"}>
-            <RightBrain />
-            <span className="value">{score[1]}</span>
-          </div>
+          <ScoreIndicator
+            isTurn={turn === Team.LEFT_BRAIN}
+            team={Team.LEFT_BRAIN}
+            score={score[Team.LEFT_BRAIN]}
+          />
+          <ScoreIndicator
+            isTurn={turn === Team.RIGHT_BRAIN}
+            team={Team.RIGHT_BRAIN}
+            score={score[Team.RIGHT_BRAIN]}
+          />
           {complete ? (
             <div className="gameOver">
-              {winner ? <RightBrain /> : <LeftBrain />}
+              {winner == Team.LEFT_BRAIN ? <LeftBrain /> : <RightBrain />}
               Team {winner ? "Right" : "Left"} Brain wins!
               <div className="newGame" onMouseDown={this.newGameClicked}>
                 New Game

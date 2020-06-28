@@ -5,6 +5,7 @@ import os
 from typing import Any
 
 from wavelength.game import Game
+from wavelength.game_state import Direction
 
 app = Flask(__name__, static_folder="../client/build")
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -44,10 +45,10 @@ def handle_request_game_state(game: Game) -> None:
     game.request_game_state()
 
 
-@socketio.on("setLeftRight")
+@socketio.on("setDirection")
 @active_game
-def handle_set_left_right(game: Game, lr: int) -> None:
-    game.set_left_right(lr)
+def handle_set_direction(game: Game, direction: Direction) -> None:
+    game.set_direction(direction)
 
 
 @socketio.on("setDialPosition")

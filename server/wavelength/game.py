@@ -1,4 +1,4 @@
-from wavelength.game_state import GameState
+from wavelength.game_state import GameState, Team, Direction
 from wavelength.clues import CluePool, get_or_load_clues
 from flask_socketio import SocketIO, join_room
 import random
@@ -26,13 +26,13 @@ class Game:
         join_room(self.game_code)
         self.emit_game_state()
 
-    def set_left_right(self, lr: int) -> None:
+    def set_direction(self, direction: Direction) -> None:
         if self.state.complete:
             self.emit_game_state()
             return
 
-        if self.state.screenClosed and type(lr) is int and lr in [0, 1]:
-            self.state.leftRight = lr
+        if self.state.screenClosed and direction in [d.value for d in Direction]:
+            self.state.direction = direction
         self.emit_game_state()
 
     def set_dial_position(self, dial_position: float) -> None:
@@ -66,17 +66,22 @@ class Game:
         elif distance * 180 <= 7.5 * 2.5:
             score = 2
 
+        curr_team = self.state.turn
+        other_team = curr_team.other()
         if score < 4:
-            if difference < 0 and self.state.leftRight == 0:
-                self.state.score[1 - self.state.turn] += 1
-            elif difference > 0 and self.state.leftRight == 1:
-                self.state.score[1 - self.state.turn] += 1
+            if difference < 0 and self.state.direction == Direction.LEFT:
+                self.state.score[other_team] += 1
+            elif difference > 0 and self.state.direction == Direction.RIGHT:
+                self.state.score[other_team] += 1
 
-        self.state.score[self.state.turn] += score
+        self.state.score[curr_team] += score
         self.state.lastScore = score
 
         # TODO handle ties, sudden death (lots of work)
-        if self.state.score[0] >= 10 or self.state.score[1] >= 10:
+        if (
+            self.state.score[Team.LEFT_BRAIN] >= 10
+            or self.state.score[Team.RIGHT_BRAIN] >= 10
+        ):
             self.state.complete = True
 
         self.emit_game_state()
@@ -92,12 +97,13 @@ class Game:
         self.state.roundNum += 1
 
         # second turn, catch-up mechanic
+        curr_team = self.state.turn
+        other_team = curr_team.other()
         if not (
             self.state.lastScore >= 4
-            and self.state.score[self.state.turn]
-            < self.state.score[1 - self.state.turn]
+            and self.state.score[curr_team] < self.state.score[other_team]
         ):
-            self.state.turn = 1 - self.state.turn
+            self.state.turn = other_team
 
         self.state.randomize_clue_color()
 
