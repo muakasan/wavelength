@@ -96,7 +96,8 @@ class Device extends Component {
   }
 
   componentDidMount() {
-    const client = socketIOClient("/");
+    const serverUrl = process.env.NODE_ENV === 'production' ? '/' : ':8080/';
+    const client = socketIOClient(serverUrl);
     const { lobbyId } = this.props;
 
     client.on("connect", () => {
