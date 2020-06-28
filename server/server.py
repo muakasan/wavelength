@@ -2,6 +2,8 @@ from flask import Flask, render_template, send_from_directory
 from flask_socketio import SocketIO, join_room
 import random
 import os
+from typing import Any
+
 from wavelength.game import Game
 
 app = Flask(__name__, static_folder="../client/build")
