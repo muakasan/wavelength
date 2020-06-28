@@ -1,15 +1,11 @@
 from typing import List
 from enum import Enum
 
-
 class CluePool(Enum):
     DEFAULT = 0
 
-
 clue_file_map = {CluePool.DEFAULT: "wavelength.csv"}
-
 clue_map = {}
-
 
 def get_or_load_clues(pool: CluePool) -> List[str]:
     if pool in clue_map:

@@ -13,7 +13,7 @@ games = {}
 
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
-def serve(path):
+def serve(path: str) -> Any:
     if path != "" and os.path.exists(app.static_folder + "/" + path):
         return send_from_directory(app.static_folder, path)
     else:
@@ -38,41 +38,41 @@ def active_game(func):
 
 @socketio.on("requestGameState")
 @active_game
-def handle_request_game_state(game):
+def handle_request_game_state(game: Game) -> None:
     game.request_game_state()
 
 
 @socketio.on("setLeftRight")
 @active_game
-def handle_set_left_right(game, lr):
+def handle_set_left_right(game: Game, lr: int) -> None:
     game.set_left_right(lr)
 
 
 @socketio.on("setDialPosition")
 @active_game
-def handle_set_dial_position(game, dial_position):
+def handle_set_dial_position(game: Game, dial_position: float) -> None:
     game.set_dial_position(dial_position)
 
 
 @socketio.on("reveal")
 @active_game
-def handle_reveal(game):
+def handle_reveal(game: Game) -> None:
     game.reveal()
 
 
 @socketio.on("nextRound")
 @active_game
-def handle_next_round(game):
+def handle_next_round(game: Game) -> None:
     game.next_round()
 
 
 @socketio.on("newGame")
 @active_game
-def handle_new_game(game):
+def handle_new_game(game: Game) -> None:
     game.new_game()
 
 
-def get_or_create_game(game_code):
+def get_or_create_game(game_code: str) -> Game:
     global games
     if game_code in games:
         return games[game_code]
