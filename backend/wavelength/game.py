@@ -4,15 +4,15 @@ from flask_socketio import SocketIO, join_room
 import random
 import json
 
+
 class Game:
-    
     def __init__(self, sio: SocketIO, game_code: str):
         self.sio = sio
         self.game_code = game_code
         self.new_game()
 
     def emit_game_state(self) -> None:
-        self.sio.emit('gameState', self.state.encode(), json=True, room=self.game_code)
+        self.sio.emit("gameState", self.state.encode(), json=True, room=self.game_code)
 
     def new_game(self) -> None:
         self.state = GameState()
@@ -22,7 +22,6 @@ class Game:
 
         self.emit_game_state()
 
-    
     def request_game_state(self) -> None:
         join_room(self.game_code)
         self.emit_game_state()
@@ -41,7 +40,11 @@ class Game:
             self.emit_game_state()
             return
 
-        if self.state.screenClosed and type(dial_position) is float and 0.05 <= dial_position <= 0.95:
+        if (
+            self.state.screenClosed
+            and type(dial_position) is float
+            and 0.05 <= dial_position <= 0.95
+        ):
             self.state.dialPosition = dial_position
         self.emit_game_state()
 
@@ -85,11 +88,15 @@ class Game:
 
         self.state.screenClosed = True
         self.state.randomize_target()
-    
+
         self.state.roundNum += 1
 
         # second turn, catch-up mechanic
-        if not (self.state.lastScore >= 4 and self.state.score[self.state.turn] < self.state.score[1 - self.state.turn]):
+        if not (
+            self.state.lastScore >= 4
+            and self.state.score[self.state.turn]
+            < self.state.score[1 - self.state.turn]
+        ):
             self.state.turn = 1 - self.state.turn
 
         self.state.randomize_clue_color()
@@ -97,6 +104,8 @@ class Game:
         if self.state.roundNum % len(self.state.clueList) == 0:
             random.shuffle(self.state.clueList)
 
-        self.state.clues = self.state.clueList[self.state.roundNum % len(self.state.clueList)]
+        self.state.clues = self.state.clueList[
+            self.state.roundNum % len(self.state.clueList)
+        ]
 
         self.emit_game_state()

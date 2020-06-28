@@ -3,10 +3,11 @@ from wavelength.clues import CluePool, get_or_load_clues
 from dataclasses import dataclass, field, asdict
 import random
 
+
 @dataclass
 class GameState:
     dialPosition: float = 0.5
-    screenClosed: bool = True 
+    screenClosed: bool = True
     targetPosition: float = 0.5
     clueList: List[Tuple[str]] = field(default_factory=lambda: [])
     clues: Tuple[str] = field(default_factory=lambda: ())
@@ -29,6 +30,6 @@ class GameState:
 
     def randomize_target(self) -> None:
         self.targetPosition = random.uniform(0.05, 0.95)
-    
+
     def randomize_clue_color(self) -> None:
         self.clueColor = random.randint(0, 18)
