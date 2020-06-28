@@ -64,7 +64,6 @@ def handle_new_game(game):
 
 def get_or_create_game(game_code):
     global games
-
     if game_code in games:
         return games[game_code]
     else:

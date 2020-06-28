@@ -73,6 +73,7 @@ class Device extends Component {
         clueColor: 0,
         score: [0, 0],
         turn: 0,
+        complete: false,
         leftRight: 0,
       },
       psychic: false,
@@ -100,6 +101,7 @@ class Device extends Component {
 
     client.on("connect", () => {
       client.emit("requestGameState", lobbyId);
+      console.log("REQUEST GAME STATE " + lobbyId);
     });
     client.on("gameState", (updatedState) => {
       const gameState = this.state.gameState;
@@ -262,8 +264,10 @@ class Device extends Component {
       score,
       turn,
       leftRight,
+      complete
     } = gameState;
     const rotation = Math.PI * (dialPosition + 1.5);
+    const winner = score[0] <= score[1];
 
     return (
       <div className="device_parent">
@@ -291,7 +295,7 @@ class Device extends Component {
 
             <div
               className="screenHandle"
-              onMouseDown={this.screenHandleClicked}
+              onMouseDown={complete ? this.newGameClicked : this.screenHandleClicked}
               style={{
                 transform: `rotate(${screenClosed ? 356.5 : 183.5}deg)`,
               }}
@@ -322,9 +326,17 @@ class Device extends Component {
             <RightBrain />
             <span className="value">{score[1]}</span>
           </div>
-          <div className="newGame" onMouseDown={this.newGameClicked}>
-            New Game
-          </div>
+          {complete ? (
+            <div className="gameOver">
+              {winner ? <RightBrain /> : <LeftBrain />}
+              Team {winner ? "Right" : "Left"} Brain wins!
+              <div className="newGame" onMouseDown={this.newGameClicked}>
+                New Game
+              </div>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     );

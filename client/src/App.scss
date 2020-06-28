@@ -100,10 +100,12 @@ $innerDeviceHeight: $innerDeviceDiameter / 2;
 .target .number {
   position: absolute;
   height: 100%;
+  left: 50%;
+  bottom: 0;
   transform-origin: bottom center;
   font-size: 22px;
   font-weight: bold;
-  transform: rotate(-86.25deg);
+  transform: translate(-50%, 0) rotate(-86.25deg) ;
 }
 
 $wingShort: 65px;
@@ -213,7 +215,7 @@ $screenShadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
 }
 
 $handleWidth: 20px;
-$handleHeight: 1.29;
+$handleHeight: 1.25;
 $handleOffset: 1;
 
 .screenHandle {
@@ -241,7 +243,7 @@ $handleOffset: 1;
 $handleShadow: 1px 0px 5px rgba(0, 0, 0, 0.5);
 
 $handleTextThick: $handleWidth + 20px;
-$handleTextWidth: 180px;
+$handleTextWidth: 165px;
 
 .screenHandleText {
   position: absolute;
@@ -324,7 +326,7 @@ $clueShadow: -5px 0px 10px 8px rgba(0, 0, 0, 0.3);
   justify-content: center;
   align-items: center;
 
-  font-size: 26px;
+  font-size: 24px;
   font-weight: bold;
 
   top: 0;
@@ -396,11 +398,7 @@ $arrowWidth: 80px;
   //background-color: #e35f2d;
 }
 
-.turn .brain {
-  //margin: -5px;
-  //border: 5px solid black;
-  stroke-width: 7px;
-}
+
 
 .score {
   position: absolute;
@@ -431,7 +429,7 @@ $arrowWidth: 80px;
   padding-bottom: 20px;
 }
 
-.brain {
+.score .brain {
   filter: drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.5));
   width: 140px;
   position: absolute;
@@ -443,6 +441,12 @@ $arrowWidth: 80px;
   stroke-width: 0px;
 
   transition: stroke-width 0.15s ease-out;
+}
+
+.score1.turn .brain {
+  //margin: -5px;
+  //border: 5px solid black;
+  stroke-width: 7px;
 }
 
 .togglePeek {
@@ -469,18 +473,50 @@ $arrowWidth: 80px;
   cursor: pointer;
 }
 
-.newGame {
+.gameOver {
   position: absolute;
 
-  left: calc(#{$outerDeviceDiameter} / 2 - 80px);
-  bottom: -100px;
+  left: calc(#{$outerDeviceDiameter} / 2 - 80px - 150px);
+  bottom: -200px;
+
+  width: 330px;
+  height: 165px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+
+  padding-left: 150px;
+
+  background-color: #f4ede1;
+
+  text-align: center;
+  line-height: 70px;
+  font-weight: bold;
+  padding-top: 15px;
+  font-size: 24px;
+} 
+
+.gameOver .brain {
+  width: 140px;
+  position: absolute;
+  left: 90px;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  stroke: black;
+  stroke-width: 0px;
+
+  transition: stroke-width 0.15s ease-out;
+}
+
+.newGame {
+  position: relative;
+  display: inline-block;
 
   width: 180px;
   height: 60px;
 
   box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
 
-  background-color: #91cecb;
+  background-color: #d74227;
 
   z-index: 5;
 
