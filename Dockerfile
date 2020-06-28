@@ -18,9 +18,9 @@ FROM python:3.8.3-alpine
 
 WORKDIR /usr/src/app/
 
-# Copy over static files, backend, requirements.txt
+# Copy over static files, server, requirements.txt
 COPY --from=build /usr/src/app/client/build ./client/build
-COPY backend ./backend
+COPY server ./server
 COPY requirements.txt requirements.txt
 
 # Install requirements.txt and dependencies
@@ -30,4 +30,4 @@ RUN apk add --update musl-dev
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-CMD [ "gunicorn", "--chdir", "./backend", "--worker-class", "eventlet", "-w", "1", "server:app"]
+CMD [ "gunicorn", "--chdir", "./server", "--worker-class", "eventlet", "-w", "1", "server:app"]
